@@ -3,6 +3,8 @@ import { Badge } from "@/components/ui/badge"
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
 import { TrendingUp, TrendingDown, Users, MessageSquare, Calendar, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { generateBusinessReport } from "@/utils/pdfGenerator"
+import { toast } from "@/hooks/use-toast"
 
 export default function Analytics() {
   // Sample data for charts
@@ -49,7 +51,13 @@ export default function Analytics() {
           <h1 className="text-3xl font-bold text-foreground">Analytics</h1>
           <p className="text-muted-foreground">Track your business performance and insights</p>
         </div>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2" onClick={() => {
+          generateBusinessReport()
+          toast({
+            title: "Report Generated",
+            description: "Your monthly business report has been downloaded successfully!",
+          })
+        }}>
           <Download className="h-4 w-4" />
           Export Report
         </Button>
@@ -242,7 +250,13 @@ export default function Analytics() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button variant="outline" className="w-full justify-start gap-2">
+            <Button variant="outline" className="w-full justify-start gap-2" onClick={() => {
+              generateBusinessReport()
+              toast({
+                title: "Monthly Report",
+                description: "Your detailed business report has been downloaded!",
+              })
+            }}>
               <Download className="h-4 w-4" />
               Download Monthly Report
             </Button>

@@ -7,48 +7,71 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Edit, MoreVertical, Clock, DollarSign, Users } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import hairServiceIcon from "@/assets/hair-service-icon.png"
+import nailServiceIcon from "@/assets/nail-service-icon.png"
+import skincareServiceIcon from "@/assets/skincare-service-icon.png"
+import wellnessServiceIcon from "@/assets/wellness-service-icon.png"
 
 export default function Services() {
+  const getServiceIcon = (category: string) => {
+    switch (category) {
+      case "Hair Services":
+        return hairServiceIcon
+      case "Nail Services":
+        return nailServiceIcon
+      case "Skincare":
+        return skincareServiceIcon
+      case "Wellness":
+        return wellnessServiceIcon
+      default:
+        return hairServiceIcon
+    }
+  }
+
   const [services, setServices] = useState([
     {
       id: 1,
       name: "Hair Cut & Style",
-      description: "Professional haircut with styling",
+      description: "Professional haircut with styling and consultation",
       price: 45,
       duration: 60,
       bookings: 23,
       status: "active",
-      category: "Hair Services"
+      category: "Hair Services",
+      color: "from-purple-500 to-blue-500"
     },
     {
       id: 2,
       name: "Manicure & Pedicure",
-      description: "Complete nail care package",
+      description: "Complete nail care package with polish",
       price: 35,
       duration: 45,
       bookings: 18,
       status: "active", 
-      category: "Nail Services"
+      category: "Nail Services",
+      color: "from-pink-500 to-purple-500"
     },
     {
       id: 3,
       name: "Facial Treatment",
-      description: "Deep cleansing facial with moisturizing",
+      description: "Deep cleansing facial with moisturizing treatment",
       price: 75,
       duration: 90,
       bookings: 12,
       status: "active",
-      category: "Skincare"
+      category: "Skincare",
+      color: "from-green-500 to-teal-500"
     },
     {
       id: 4,
       name: "Massage Therapy",
-      description: "Relaxing full body massage",
+      description: "Relaxing full body massage with aromatherapy",
       price: 85,
       duration: 120,
       bookings: 8,
       status: "paused",
-      category: "Wellness"
+      category: "Wellness",
+      color: "from-orange-500 to-red-500"
     }
   ])
 
@@ -72,7 +95,8 @@ export default function Services() {
         duration: parseInt(newService.duration) || 30,
         bookings: 0,
         status: "active" as const,
-        category: newService.category || "General"
+        category: newService.category || "General",
+        color: "from-purple-500 to-blue-500" // Default gradient color
       }
       setServices([...services, service])
       setNewService({ name: "", description: "", price: "", duration: "", category: "" })
@@ -177,16 +201,23 @@ export default function Services() {
       {/* Services Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((service) => (
-          <Card key={service.id} className="shadow-card hover:shadow-elegant transition-all duration-300 border-0">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="space-y-1">
-                  <CardTitle className="text-lg text-foreground">{service.name}</CardTitle>
-                  <CardDescription className="text-sm">{service.description}</CardDescription>
+          <Card key={service.id} className="shadow-card hover:shadow-elegant transition-all duration-300 border-0 overflow-hidden group">
+            {/* Service Header with Icon */}
+            <div className={`h-20 bg-gradient-to-r ${service.color} relative`}>
+              <div className="absolute inset-0 bg-black/10"></div>
+              <div className="absolute -bottom-6 left-6">
+                <div className="w-12 h-12 rounded-xl bg-white shadow-lg flex items-center justify-center border-2 border-white">
+                  <img 
+                    src={getServiceIcon(service.category)} 
+                    alt={service.category}
+                    className="w-8 h-8 object-contain"
+                  />
                 </div>
+              </div>
+              <div className="absolute top-4 right-4">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20">
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -201,41 +232,58 @@ export default function Services() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <Badge 
-                variant={service.status === "active" ? "default" : "secondary"}
-                className="w-fit"
-              >
-                {service.status}
-              </Badge>
+            </div>
+
+            <CardHeader className="pt-8 pb-3">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg text-foreground group-hover:text-primary transition-colors">
+                    {service.name}
+                  </CardTitle>
+                  <Badge 
+                    variant={service.status === "active" ? "default" : "secondary"}
+                    className="text-xs"
+                  >
+                    {service.status}
+                  </Badge>
+                </div>
+                <CardDescription className="text-sm line-clamp-2">{service.description}</CardDescription>
+              </div>
             </CardHeader>
+            
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <DollarSign className="h-4 w-4" />
-                  <span>Price</span>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-3 rounded-lg bg-muted/50">
+                  <div className="flex items-center justify-center gap-1 text-primary mb-1">
+                    <DollarSign className="h-4 w-4" />
+                  </div>
+                  <p className="text-2xl font-bold text-foreground">${service.price}</p>
+                  <p className="text-xs text-muted-foreground">Price</p>
                 </div>
-                <span className="font-semibold text-foreground">${service.price}</span>
+                
+                <div className="text-center p-3 rounded-lg bg-muted/50">
+                  <div className="flex items-center justify-center gap-1 text-primary mb-1">
+                    <Clock className="h-4 w-4" />
+                  </div>
+                  <p className="text-2xl font-bold text-foreground">{service.duration}</p>
+                  <p className="text-xs text-muted-foreground">Minutes</p>
+                </div>
               </div>
               
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>Duration</span>
-                </div>
-                <span className="text-foreground">{service.duration} min</span>
-              </div>
-              
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-1 text-muted-foreground">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
+                <div className="flex items-center gap-2 text-primary">
                   <Users className="h-4 w-4" />
-                  <span>Bookings</span>
+                  <span className="text-sm font-medium">Bookings</span>
                 </div>
-                <span className="text-foreground">{service.bookings} this month</span>
+                <div className="text-right">
+                  <p className="text-lg font-bold text-foreground">{service.bookings}</p>
+                  <p className="text-xs text-muted-foreground">this month</p>
+                </div>
               </div>
               
               <div className="pt-2 border-t border-border">
-                <p className="text-xs text-muted-foreground">
-                  Category: <span className="font-medium">{service.category}</span>
+                <p className="text-xs text-muted-foreground text-center">
+                  <span className="font-medium text-primary">{service.category}</span>
                 </p>
               </div>
             </CardContent>

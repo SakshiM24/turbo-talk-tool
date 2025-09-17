@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Services from "./pages/Services";
 import Analytics from "./pages/Analytics";
 import Chatbot from "./pages/Chatbot";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
               <Route path="services" element={<Services />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="chatbot" element={<Chatbot />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
