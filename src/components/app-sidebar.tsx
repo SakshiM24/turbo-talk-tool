@@ -15,11 +15,11 @@ import {
 } from "@/components/ui/sidebar"
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: Home },
-  { title: "Services", url: "/services", icon: Store },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
-  { title: "Chatbot", url: "/chatbot", icon: MessageSquare },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Dashboard", url: "/dashboard/owner", icon: Home },
+  { title: "Services", url: "/dashboard/owner/services", icon: Store },
+  { title: "Analytics", url: "/dashboard/owner/analytics", icon: BarChart3 },
+  { title: "Chatbot", url: "/dashboard/owner/chatbot", icon: MessageSquare },
+  { title: "Settings", url: "/dashboard/owner/settings", icon: Settings },
 ]
 
 export function AppSidebar() {
@@ -36,8 +36,8 @@ export function AppSidebar() {
           </div>
           {!isCollapsed && (
             <div>
-              <h2 className="text-lg font-semibold text-foreground">Business Hub</h2>
-              <p className="text-xs text-muted-foreground">SaaS Dashboard</p>
+              <h2 className="text-lg font-semibold text-foreground">TurboTalk</h2>
+              <p className="text-xs text-muted-foreground">Owner Dashboard</p>
             </div>
           )}  
         </div>
