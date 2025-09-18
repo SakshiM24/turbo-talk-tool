@@ -10,6 +10,7 @@ import Services from "./pages/Services";
 import Analytics from "./pages/Analytics";
 import Chatbot from "./pages/Chatbot";
 import Settings from "./pages/Settings";
+import CustomerChat from "./pages/CustomerChat";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,10 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Customer-facing chatbot (no admin access) */}
+            <Route path="/chat" element={<CustomerChat />} />
+            
+            {/* Admin dashboard routes */}
             <Route path="/" element={<DashboardLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="services" element={<Services />} />

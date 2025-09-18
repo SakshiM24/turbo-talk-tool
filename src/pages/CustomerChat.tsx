@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Send, Bot, User, Settings, RefreshCw, MessageSquare, Clock, ThumbsUp } from "lucide-react"
+import { Send, Bot, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface Message {
@@ -11,28 +10,15 @@ interface Message {
   type: "user" | "bot"
   content: string
   timestamp: Date
-  status?: "delivered" | "read"
 }
 
-export default function Chatbot() {
+export default function CustomerChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
       type: "bot",
-      content: "Hello! I'm your business assistant. I can help customers with service information, booking appointments, and answering common questions. How can I help you today?",
-      timestamp: new Date(Date.now() - 5000),
-    },
-    {
-      id: 2,
-      type: "user", 
-      content: "What services do you offer?",
-      timestamp: new Date(Date.now() - 4000),
-    },
-    {
-      id: 3,
-      type: "bot",
-      content: "We offer a variety of services including:\n\n• Hair Cut & Style ($45, 60 min)\n• Manicure & Pedicure ($35, 45 min)\n• Facial Treatment ($75, 90 min)\n• Massage Therapy ($85, 120 min)\n\nWould you like to book an appointment for any of these services?",
-      timestamp: new Date(Date.now() - 3000),
+      content: "Hello! Welcome to our business! 👋 I'm your AI assistant and I'm here to help you with:\n\n• Service information & pricing\n• Booking appointments\n• Business hours & location\n• Answering any questions\n\nHow can I help you today?",
+      timestamp: new Date(Date.now() - 2000),
     }
   ])
 
@@ -113,68 +99,26 @@ export default function Chatbot() {
     return "Thank you for reaching out! 😊 I'm here to help with:\n\n• Service information & pricing\n• Booking appointments\n• Business hours & location\n• Payment options\n• Cancellations & rescheduling\n\nWhat would you like to know? You can also call us at (555) 123-4567 for immediate assistance!"
   }
 
-  const recentChats = [
-    { customer: "Sarah M.", message: "What time do you close?", time: "2 mins ago", status: "answered" },
-    { customer: "Mike T.", message: "Do you have availability tomorrow?", time: "15 mins ago", status: "pending" },
-    { customer: "Emma K.", message: "What's included in facial?", time: "1 hour ago", status: "answered" },
-  ]
-
-  const chatStats = [
-    { label: "Today's Conversations", value: "47", change: "+12%" },
-    { label: "Avg Response Time", value: "1.2s", change: "-0.3s" },
-    { label: "Customer Satisfaction", value: "4.6★", change: "+0.2" },
-    { label: "Conversion Rate", value: "12.8%", change: "+1.4%" },
-  ]
-
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Chatbot</h1>
-          <p className="text-muted-foreground">AI-powered customer support for your business</p>
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Customer Support</h1>
+          <p className="text-muted-foreground">Chat with our AI assistant for instant help</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon">
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon">
-            <Settings className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {chatStats.map((stat) => (
-          <Card key={stat.label} className="shadow-card border-0 bg-gradient-card">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                </div>
-                <MessageSquare className="h-8 w-8 text-primary opacity-60" />
-              </div>
-              <div className="flex items-center mt-2">
-                <Badge variant="secondary" className="text-xs">
-                  {stat.change}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chat Interface */}
-        <Card className="lg:col-span-2 shadow-elegant border-0">
-          <CardHeader>
+        <Card className="shadow-elegant border-0 max-w-2xl mx-auto">
+          <CardHeader className="bg-gradient-primary text-primary-foreground">
             <CardTitle className="flex items-center gap-2">
-              <Bot className="h-5 w-5 text-primary" />
-              Live Chat Demo
+              <Bot className="h-5 w-5" />
+              AI Assistant
+              <div className="ml-auto flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-sm">Online</span>
+              </div>
             </CardTitle>
-            <CardDescription>Test your chatbot responses</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
             {/* Messages Area */}
@@ -235,7 +179,7 @@ export default function Chatbot() {
                 <Input
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type your message..."
+                  placeholder="Ask about services, booking, or anything else..."
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   className="flex-1"
                 />
@@ -247,43 +191,46 @@ export default function Chatbot() {
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                Powered by AI • Response time: ~1-2 seconds
+              </p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Recent Chats Sidebar */}
-        <Card className="shadow-card border-0">
-          <CardHeader>
-            <CardTitle>Recent Conversations</CardTitle>
-            <CardDescription>Latest customer interactions</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {recentChats.map((chat, index) => (
-              <div key={index} className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-medium text-sm text-foreground">{chat.customer}</p>
-                  <Badge 
-                    variant={chat.status === "answered" ? "default" : "secondary"}
-                    className="text-xs"
-                  >
-                    {chat.status}
-                  </Badge>
-                </div>
-                <p className="text-sm text-muted-foreground truncate">{chat.message}</p>
-                <div className="flex items-center justify-between mt-2">
-                  <p className="text-xs text-muted-foreground">{chat.time}</p>
-                  {chat.status === "answered" && (
-                    <ThumbsUp className="h-3 w-3 text-success" />
-                  )}
-                </div>
-              </div>
-            ))}
-            
-            <Button variant="outline" className="w-full mt-4">
-              View All Conversations
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Quick Actions */}
+        <div className="flex flex-wrap gap-2 justify-center mt-6">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              setNewMessage("What services do you offer?")
+              handleSendMessage()
+            }}
+          >
+            View Services
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              setNewMessage("I want to book an appointment")
+              handleSendMessage()
+            }}
+          >
+            Book Now
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              setNewMessage("What are your hours?")
+              handleSendMessage()
+            }}
+          >
+            Hours & Location
+          </Button>
+        </div>
       </div>
     </div>
   )
