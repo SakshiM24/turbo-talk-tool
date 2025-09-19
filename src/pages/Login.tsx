@@ -6,52 +6,67 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Building2, Users } from "lucide-react";
 
 const Login = () => {
+  const [isSignUp, setIsSignUp] = useState(false);
   const [ownerCredentials, setOwnerCredentials] = useState({
-    email: "owner@example.com",
-    password: "ownerpass"
+    email: "",
+    password: ""
   });
   const [customerCredentials, setCustomerCredentials] = useState({
-    email: "customer@example.com", 
-    password: "custpass"
+    email: "", 
+    password: ""
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn, signUp } = useAuth();
 
-  const handleLogin = async (role: 'owner' | 'customer') => {
+  const handleAuth = async (role: 'owner' | 'customer') => {
     setIsLoading(true);
     
     try {
-      // Simulate authentication - in real app this would call Supabase auth
       const credentials = role === 'owner' ? ownerCredentials : customerCredentials;
       
-      // Mock authentication success
-      const mockToken = `mock-jwt-${role}-${Date.now()}`;
-      const user = {
-        id: role === 'owner' ? 'owner-123' : 'customer-456',
-        email: credentials.email,
-        role
-      };
+      if (!credentials.email || !credentials.password) {
+        toast({
+          title: "Error",
+          description: "Please fill in all fields",
+          variant: "destructive"
+        });
+        return;
+      }
 
-      // Store auth data
-      localStorage.setItem('authToken', mockToken);
-      localStorage.setItem('userRole', role);
-      localStorage.setItem('user', JSON.stringify(user));
+      let result;
+      if (isSignUp) {
+        result = await signUp(credentials.email, credentials.password, role);
+      } else {
+        result = await signIn(credentials.email, credentials.password);
+      }
+
+      if (result.error) {
+        toast({
+          title: isSignUp ? "Sign up failed" : "Sign in failed",
+          description: result.error,
+          variant: "destructive"
+        });
+        return;
+      }
 
       toast({
-        title: "Login successful",
-        description: `Welcome ${role}!`
+        title: isSignUp ? "Sign up successful" : "Sign in successful",
+        description: isSignUp ? "Please check your email to verify your account" : `Welcome back!`
       });
 
-      // Redirect based on role
-      navigate(role === 'owner' ? '/dashboard/owner' : '/dashboard/customer');
+      if (!isSignUp) {
+        // Navigation will be handled by auth state change
+      }
     } catch (error) {
       toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again.",
+        title: "Error",
+        description: "An unexpected error occurred",
         variant: "destructive"
       });
     } finally {
@@ -64,7 +79,9 @@ const Login = () => {
       <Card className="w-full max-w-md mx-auto shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Welcome to TurboTalk</CardTitle>
-          <CardDescription>Sign in to access your dashboard</CardDescription>
+          <CardDescription>
+            {isSignUp ? "Create your account" : "Sign in to access your dashboard"}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="owner" className="w-full">
@@ -87,7 +104,7 @@ const Login = () => {
                   type="email"
                   value={ownerCredentials.email}
                   onChange={(e) => setOwnerCredentials(prev => ({...prev, email: e.target.value}))}
-                  placeholder="owner@example.com"
+                  placeholder="Enter your email"
                 />
               </div>
               <div className="space-y-2">
@@ -97,15 +114,15 @@ const Login = () => {
                   type="password"
                   value={ownerCredentials.password}
                   onChange={(e) => setOwnerCredentials(prev => ({...prev, password: e.target.value}))}
-                  placeholder="ownerpass"
+                  placeholder="Enter your password"
                 />
               </div>
               <Button 
-                onClick={() => handleLogin('owner')} 
+                onClick={() => handleAuth('owner')} 
                 className="w-full" 
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign in as Owner"}
+                {isLoading ? "Loading..." : isSignUp ? "Sign up as Owner" : "Sign in as Owner"}
               </Button>
             </TabsContent>
             
@@ -117,7 +134,7 @@ const Login = () => {
                   type="email"
                   value={customerCredentials.email}
                   onChange={(e) => setCustomerCredentials(prev => ({...prev, email: e.target.value}))}
-                  placeholder="customer@example.com"
+                  placeholder="Enter your email"
                 />
               </div>
               <div className="space-y-2">
@@ -127,23 +144,27 @@ const Login = () => {
                   type="password"
                   value={customerCredentials.password}
                   onChange={(e) => setCustomerCredentials(prev => ({...prev, password: e.target.value}))}
-                  placeholder="custpass"
+                  placeholder="Enter your password"
                 />
               </div>
               <Button 
-                onClick={() => handleLogin('customer')} 
+                onClick={() => handleAuth('customer')} 
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign in as Customer"}
+                {isLoading ? "Loading..." : isSignUp ? "Sign up as Customer" : "Sign in as Customer"}
               </Button>
             </TabsContent>
           </Tabs>
           
           <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">Demo Credentials:</p>
-            <p className="text-xs text-muted-foreground">Owner: owner@example.com / ownerpass</p>
-            <p className="text-xs text-muted-foreground">Customer: customer@example.com / custpass</p>
+            <Button
+              variant="ghost"
+              onClick={() => setIsSignUp(!isSignUp)}
+              className="text-sm text-muted-foreground"
+            >
+              {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
+            </Button>
           </div>
         </CardContent>
       </Card>
